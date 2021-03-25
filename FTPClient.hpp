@@ -8,7 +8,7 @@ private:
     string url_;
     
 public:
-    FTPClient(string username, string password, string ip, string port);
+    bool init(string username, string password, string ip, string port);
     bool send(const char* fssource, const char* ftpdest);
     bool receive(const char* ftpsource, const char* fsdest);
     const string url();

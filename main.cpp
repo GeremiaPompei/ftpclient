@@ -1,23 +1,42 @@
 #include "utility.h"
 #include "FTPClient.hpp"
 
+void split(string str, vector<string> *v, char delimiter) {
+        string token = "";
+        for(auto c : str) {
+            if(c == delimiter) {
+                token += "\0";
+                v->push_back(token);
+                token = "";
+            } else {
+                token += c;
+            }
+        }
+        token += "\0";
+        v->push_back(token);
+    }
+
 int main(int argc, char **argv)
 {
-    FTPClient *client = new FTPClient(argv[0], argv[1], argv[2], argv[3]);
-    cout << client->url() << endl;
+    FTPClient *client = new FTPClient();
     while(true) {
         try {
-            string method, source, dest;
-            cout << "Inserisci il SEND o RECEIVE." << endl;
-            cin >> method;
-            cout << "Inserisci il file sorgente." << endl;
-            cin >> source;
-            cout << "Inserisci il directory destinazione." << endl;
-            cin >> dest;
-            if(method == "SEND")
-                client->send(source.c_str(), dest.c_str());
+            cout << "Inserisci S o R(SEND o RECEIVE), sorgente e destinazione separati da uno spazio. Scrivi exit per uscire!" << endl << "S/D path_source/file path_dest" << endl;
+            vector<string> v;
+            char in[200];
+            cout << " > ";
+            cin.getline(in, sizeof(in));
+            if(string(in) == "exit") break;
+            split(in, &v, ' ');
+            if(v[0] == "I") {
+                cout << "Response: " << client->init(v[1].c_str(), v[2].c_str(), v[3].c_str(), v[4].c_str()) << endl;
+                cout << client->url() << endl;
+            } else if(v[0] == "S")
+                cout << "Response: " << client->send(v[1].c_str(), v[2].c_str()) << endl;
+            else if(v[0] == "R")
+                cout << "Response: " << client->receive(v[1].c_str(), v[2].c_str()) << endl;
             else
-                client->receive(source.c_str(), dest.c_str());
+                cout << "Metodo non valido!" << endl;
         } __catch(exception e) {
             cout << e.what() << endl;
         }
