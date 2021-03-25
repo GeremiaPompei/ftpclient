@@ -35,15 +35,24 @@ string getFileName(string source, string dest)
 
 bool FTPClient::init(string username, string password, string ip, string port)
 {
-    url_ = "ftp://"+username+":"+password+"@"+ip+":"+port+"/";
-    /*CURL *curl;
-    curl_easy_setopt(curl, CURLOPT_URL, url_.c_str());
-    CURLcode res = curl_easy_perform(curl);
-    if(res != CURLE_OK)
+    try {
+        url_ = "ftp://"+username+":"+password+"@"+ip+":"+port;
+        CURL *curl;
+        CURLcode res;
+        curl = curl_easy_init();
+        if(curl) {
+            curl_easy_setopt(curl, CURLOPT_URL, url_.c_str());
+            curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
+            res = curl_easy_perform(curl);
+            if(res != CURLE_OK)
+                return false;
+            curl_easy_cleanup(curl);
+        }
+        curl_global_cleanup();
+        return true;
+    } __catch(exception e) {
         return false;
-    curl_easy_cleanup(curl);
-    curl_global_cleanup();*/
-    return true;
+    }
 }
 
 

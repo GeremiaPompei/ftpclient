@@ -21,7 +21,7 @@ int main(int argc, char **argv)
     FTPClient *client = new FTPClient();
     while(true) {
         try {
-            cout << "Inserisci S o R(SEND o RECEIVE), sorgente e destinazione separati da uno spazio. Scrivi exit per uscire!" << endl << "S/D path_source/file path_dest" << endl;
+            cout << "Inserisci I, S o R(INITIALIZER, SEND o RECEIVE), username, password, ip e porta (per I) o sorgente e destinazione separati da uno spazio (per S o R). Scrivi exit per uscire!" << endl << "I user pass ip port" << endl << "S/D path_source/file path_dest" << endl;
             vector<string> v;
             char in[200];
             cout << " > ";
