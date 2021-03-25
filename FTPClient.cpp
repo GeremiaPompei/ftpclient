@@ -6,7 +6,7 @@ struct FtpFile
     FILE *stream;
 };
 
-static size_t my_fwrite(void *buffer, size_t size, size_t nmemb, void *stream)
+static size_t write_callback(void *buffer, size_t size, size_t nmemb, void *stream)
 {
     struct FtpFile *out = (struct FtpFile *)stream;
     if(!out->stream) {
@@ -15,11 +15,6 @@ static size_t my_fwrite(void *buffer, size_t size, size_t nmemb, void *stream)
         return -1;
     }
     return fwrite(buffer, size, nmemb, out->stream);
-}
-
-FTPClient::FTPClient(string username, string password, string ip, string port)
-{
-    url_ = "ftp://"+username+":"+password+"@"+ip+":"+port+"/";
 }
 
 static size_t read_callback(char *ptr, size_t size, size_t nmemb, FILE *stream)
@@ -38,6 +33,11 @@ string getFileName(string source, string dest)
     size_t p = fileName.find_last_of("/");
     fileName = fileName.substr(p, fileName.length());
     return dest+fileName;
+}
+
+FTPClient::FTPClient(string username, string password, string ip, string port)
+{
+    url_ = "ftp://"+username+":"+password+"@"+ip+":"+port+"/";
 }
 
 
@@ -89,7 +89,7 @@ bool FTPClient::receive(const char* ftpsource, const char* fsdest)
     if(curl) {
         string fullsource = url_+ ftpsource;
         curl_easy_setopt(curl, CURLOPT_URL, fullsource.c_str());
-        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, my_fwrite);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ftpfile);
         curl_easy_setopt(curl, CURLOPT_VERBOSE, 1L);
         res = curl_easy_perform(curl);
