@@ -1,6 +1,9 @@
 #include "utility.h"
 #include "FTPClient.hpp"
 
+/**
+ * Metodo utile a separare una stringa in sottostringhe dato un carattere delimitatore.
+ */
 void split(string str, vector<string> *v, char delimiter) {
         string token = "";
         for(auto c : str) {
@@ -16,6 +19,9 @@ void split(string str, vector<string> *v, char delimiter) {
         v->push_back(token);
     }
 
+/**
+ * Funzione main utile a far partire il programma e fornire l'implementazione della console view.
+ */
 int main(int argc, char **argv)
 {
     FTPClient *client = new FTPClient();
@@ -30,7 +36,6 @@ int main(int argc, char **argv)
             split(in, &v, ' ');
             if(v[0] == "I") {
                 cout << "Response: " << client->init(v[1].c_str(), v[2].c_str(), v[3].c_str(), v[4].c_str()) << endl;
-                cout << client->url() << endl;
             } else if(v[0] == "S")
                 cout << "Response: " << client->send(v[1].c_str(), v[2].c_str()) << endl;
             else if(v[0] == "R")

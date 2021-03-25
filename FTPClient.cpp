@@ -1,38 +1,38 @@
 #include "FTPClient.hpp"
 
-struct FtpFile 
+/**
+ * Funzione utile a scrivere il contenuto del buffer nel file out.
+ */
+static size_t write_callback(void *buffer, size_t size, size_t nmemb, FILE *out)
 {
-    const char *filename;
-    FILE *stream;
-};
-
-static size_t write_callback(void *buffer, size_t size, size_t nmemb, FILE *stream)
-{
-    struct FtpFile *out = (struct FtpFile *)stream;
-    if(!out->stream) {
-        out->stream = fopen(out->filename, "wb");
-        if(!out->stream)
-        return -1;
-    }
-    return fwrite(buffer, size, nmemb, out->stream);
+    return fwrite(buffer, size, nmemb, out);
 }
 
-static size_t read_callback(char *ptr, size_t size, size_t nmemb, FILE *stream)
+/**
+ * Funzione utile a leggere il contenuto del file in nel buffer.
+ */
+static size_t read_callback(char *buffer, size_t size, size_t nmemb, FILE *in)
 {
   curl_off_t nread;
-  size_t retcode = fread(ptr, size, nmemb, stream);
+  size_t retcode = fread(buffer, size, nmemb, in);
   nread = (curl_off_t)retcode;
   return retcode;
 }
 
+/**
+ * Metodo utile a costruire il filename completo della destinazione data il path della directory dest e il nome estrapolato dal path source.
+ */
 string getFileName(string source, string dest)
 {
     string fileName = source;
     size_t p = fileName.find_last_of("/");
     fileName = fileName.substr(p, fileName.length());
-    return dest+fileName;
+    return dest + fileName;
 }
 
+/**
+ * Implementazione del metodo init utile per inizializzare la stringa della connessione.
+ */
 bool FTPClient::init(string username, string password, string ip, string port)
 {
     try {
@@ -55,7 +55,9 @@ bool FTPClient::init(string username, string password, string ip, string port)
     }
 }
 
-
+/**
+ * Implementazione del metodo send utile per inviare il file fssource nella directory ftpdest.
+ */
 bool FTPClient::send(const char* fssource, const char* ftpdest)
 {
     try {
@@ -90,38 +92,35 @@ bool FTPClient::send(const char* fssource, const char* ftpdest)
     }
 }
 
+/**
+ * Implementazione del metodo receive utile per salvare il file ftpsource nella directory fsdest.
+ */
 bool FTPClient::receive(const char* ftpsource, const char* fsdest)
 {
     try {
         string dest = getFileName(ftpsource, fsdest);
         CURL *curl;
         CURLcode res;
-        struct FtpFile ftpfile = {
-            dest.c_str(),
-            NULL
-        };
+        FILE *out = fopen(dest.c_str(), "wb");
+        if(!out)
+            return false;
         curl_global_init(CURL_GLOBAL_DEFAULT);
         curl = curl_easy_init();
         if(curl) {
             string fullsource = url_+ ftpsource;
             curl_easy_setopt(curl, CURLOPT_URL, fullsource.c_str());
             curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, write_callback);
-            curl_easy_setopt(curl, CURLOPT_WRITEDATA, &ftpfile);
+            curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
             res = curl_easy_perform(curl);
             curl_easy_cleanup(curl);
             if(CURLE_OK != res) 
                 return false;
         }
-        if(ftpfile.stream)
-            fclose(ftpfile.stream);
+        if(out)
+            fclose(out);
         curl_global_cleanup();
         return true;
     } __catch(exception e) {
         return false;
     }
-}
-
-const string FTPClient::url()
-{
-    return url_;
 }
