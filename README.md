@@ -2,7 +2,7 @@
 
 **ftpclient** è un programma scritto in C++ per inviare e ricevere dati tramite il protocollo FTP. 
 Come si deduce dal nome esso funge da client che contatta un server FTP per le varie opzioni.
-Il progetto è si basa sull'uso delle librerie **libcurl**.
+Il progetto si basa sull'uso delle librerie [**libcurl**](https://curl.se/libcurl/).
 
 ## Istallazione e build
 ### Istallazione libcurl
