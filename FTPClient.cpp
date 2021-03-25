@@ -113,8 +113,10 @@ bool FTPClient::receive(const char* ftpsource, const char* fsdest)
             curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
             res = curl_easy_perform(curl);
             curl_easy_cleanup(curl);
-            if(CURLE_OK != res) 
+            if(CURLE_OK != res) {
+                remove(dest.c_str());
                 return false;
+            }
         }
         if(out)
             fclose(out);
