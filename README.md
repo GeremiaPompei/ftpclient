@@ -35,7 +35,7 @@ Avviato il programma esso è composto da 3 semplici comandi, ovvero l'*inizializ
 *ricezione* di un file. L'inizializzatore deve essere ovviamente eseguito prima degli altri due comandi. Inoltre vi è il comando *exit* per terminare l'esecuzione.
 Ogni comando tranne exit genera una risposta con **0** in caso di **errore** o **1** in caso di **successo**.
 #### INITIALIZER
-Permette di inizializzare una stringa di connessione FTP fornando l'*url* del server remoto che potrebbe essere *ftp://nomedominio* o *ftp://username:password@ip:porta/ o altri formati. Il comando è 
+Permette di inizializzare una stringa di connessione FTP fornando l'*url* del server remoto che potrebbe essere *ftp://nomedominio* o *ftp://username:password@ip:porta/* o altri formati. Il comando è 
 ```
 I <URL>
 ```
