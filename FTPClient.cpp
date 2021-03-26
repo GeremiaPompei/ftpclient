@@ -35,6 +35,7 @@ string getFileName(string source, string dest)
  */
 bool FTPClient::init(string url)
 {
+    bool success = true;
     url_ = url;
     CURL *curl;
     CURLcode res;
@@ -44,13 +45,10 @@ bool FTPClient::init(string url)
         curl_easy_setopt(curl, CURLOPT_NOBODY, 1L);
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
-        curl_global_cleanup();
-        if(res != CURLE_OK)
-            return false;
-        else
-            return true;
-    } else 
-        return false;
+        if(res == CURLE_OK)
+            success = true;
+    }
+    return success;
 }
 
 /**
@@ -58,14 +56,15 @@ bool FTPClient::init(string url)
  */
 bool FTPClient::send(const char* fssource, const char* ftpdest)
 {
+    bool success = false;
     string dest = url_ + getFileName(fssource, ftpdest);
+    struct stat file_info;
+    if(stat(fssource, &file_info))
+        return false;
     CURL *curl;
     CURLcode res;
     FILE *hd_src;
-    struct stat file_info;
     curl_off_t fsize;
-    if(stat(fssource, &file_info))
-        return false;
     fsize = (curl_off_t)file_info.st_size;
     hd_src = fopen(fssource, "rb");
     curl_global_init(CURL_GLOBAL_ALL);
@@ -78,14 +77,12 @@ bool FTPClient::send(const char* fssource, const char* ftpdest)
         curl_easy_setopt(curl, CURLOPT_INFILESIZE_LARGE, (curl_off_t)fsize);
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
-        fclose(hd_src);
-        curl_global_cleanup();
-        if(res != CURLE_OK)
-            return false;
-        else
-            return true;
-    } else
-        return false;
+        if(res == CURLE_OK)
+            success = true;
+    }
+    fclose(hd_src);
+    curl_global_cleanup();
+    return success;
 }
 
 /**
@@ -93,6 +90,7 @@ bool FTPClient::send(const char* fssource, const char* ftpdest)
  */
 bool FTPClient::receive(const char* ftpsource, const char* fsdest)
 {
+    bool success = false;
     string dest = getFileName(ftpsource, fsdest);
     FILE *out = fopen(dest.c_str(), "wb");
     if(!out)
@@ -108,14 +106,13 @@ bool FTPClient::receive(const char* ftpsource, const char* fsdest)
         curl_easy_setopt(curl, CURLOPT_WRITEDATA, out);
         res = curl_easy_perform(curl);
         curl_easy_cleanup(curl);
-        if(out)
-            fclose(out);
-        curl_global_cleanup();
-        if(CURLE_OK != res) {
-            remove(dest.c_str());
-            return false;
-        } else
-            return true;
-    } else 
-        return false;
+        if(CURLE_OK == res)
+            success = true;
+    } 
+    if(out)
+        fclose(out);
+    curl_global_cleanup();
+    if (!success)
+        remove(dest.c_str());
+    return success;
 }
