@@ -1,0 +1,7 @@
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/install/strip.dir
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/install.dir
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/list_install_components.dir
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/rebuild_cache.dir
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/edit_cache.dir
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/install/local.dir
+/home/geremiapompei/projects/ftpclient/build/CMakeFiles/ftpclient.dir

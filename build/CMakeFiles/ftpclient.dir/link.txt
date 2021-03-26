@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/ftpclient.dir/main.cpp.o CMakeFiles/ftpclient.dir/FTPClient.cpp.o  -o ftpclient  -lcurl 
