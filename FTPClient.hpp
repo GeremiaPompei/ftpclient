@@ -15,9 +15,9 @@ private:
     
 public:
     /**
-     * Metodo utile per inizializzare i parametri della stringa di connessione.
+     * Metodo utile per inizializzare la stringa di connessione.
      */
-    bool init(string username, string password, string ip, string port);
+    bool init(string url);
     
     /**
      * Metodo utile ad inviare il file locale fssource alla directory remota ftpdest.

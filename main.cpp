@@ -35,7 +35,7 @@ int main(int argc, char **argv)
             if(string(in) == "exit") break;
             split(in, &v, ' ');
             if(v[0] == "I") {
-                cout << "Response: " << client->init(v[1].c_str(), v[2].c_str(), v[3].c_str(), v[4].c_str()) << endl;
+                cout << "Response: " << client->init(v[1].c_str()) << endl;
             } else if(v[0] == "S")
                 cout << "Response: " << client->send(v[1].c_str(), v[2].c_str()) << endl;
             else if(v[0] == "R")

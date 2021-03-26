@@ -33,10 +33,10 @@ string getFileName(string source, string dest)
 /**
  * Implementazione del metodo init utile per inizializzare la stringa della connessione.
  */
-bool FTPClient::init(string username, string password, string ip, string port)
+bool FTPClient::init(string url)
 {
     try {
-        url_ = "ftp://"+username+":"+password+"@"+ip+":"+port;
+        url_ = url;
         CURL *curl;
         CURLcode res;
         curl = curl_easy_init();
