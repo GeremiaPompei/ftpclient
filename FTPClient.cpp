@@ -35,7 +35,7 @@ string getFileName(string source, string dest)
  */
 bool FTPClient::init(string url)
 {
-    bool success = true;
+    bool success = false;
     url_ = url;
     CURL *curl;
     CURLcode res;
